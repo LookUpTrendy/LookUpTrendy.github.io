@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos - Importaciones de China</title>
+    <style>
+        :root {
+            --primary-color: #ff6200;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: rgb(0, 0, 0);
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        nav {
+            background-color: #000000;
+            padding: 10px 0;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin: 0 15px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin: 40px 0 20px;
+            color: var(--primary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-color);
+            margin: 10px auto 0;
+        }
+        
+        /* Catálogo de productos */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-images {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .product-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .product-image.active {
+            opacity: 1;
+        }
+        
+        .image-nav {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .image-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            margin: 0 5px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .image-dot.active {
+            background-color: white;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-model {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        
+        .product-name {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .product-price {
+            font-size: 1.3em;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .product-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .product-link:hover {
+            background-color: #3a5683;
+        }
+        
+        /* Video tutorial */
+        .video-section {
+            background-color: var(--secondary-color);
+            padding: 50px 0;
+            margin: 50px 0;
+        }
+        
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .video-content {
+            position: relative;
+            padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ddd;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #555;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Look Up Trendy</h1>
+            <p>¡ Compra tu ropa de marca al mejor precio !</p>
+        
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="https://ikako.vip/r/LookUpTrendy" target="_blank"><h2>440€ en Kakobuy 👈🏼</h2></a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <section class="container">
+            <h2 class="section-title">Catálogo de Productos</h2>
+            
+            <div class="product-grid">
+                <!-- Producto 1 -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <img src="imagenes/camiseta DENIM TEARS.jpg" alt="Smartphone XiaoPro" class="product-image active" data-product="1" data-image="1">
+                        <img src="imagenes/camisetaDENIM TEARS.jpg" alt="Smartphone XiaoPro - Vista lateral" class="product-image" data-product="1" data-image="2">
+                        <img src="imagenes/Camiseta Denim.jpg" alt="Smartphone XiaoPro - Vista trasera" class="product-image" data-product="1" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="1" data-image="1"></button>
+                            <button class="image-dot" data-product="1" data-image="2"></button>
+                            <button class="image-dot" data-product="1" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">DENIM TEARS</div>
+                        <h3 class="product-name">Camiseta</h3>
+                        <div class="product-price">3,12€</div>
+                        <a href="https://detail.1688.com/offer/873523985995.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                
+                <!-- Producto 2 -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <img src="imagenes/pantalones denim1.jpg" alt="Auriculares inalámbricos SoundBeats" class="product-image active" data-product="2" data-image="1">
+                        <img src="imagenes/pantalones denim2.jpg" alt="Smartwatch FitLife - Correa negra" class="product-image" data-product="2" data-image="2">
+                        <img src="imagenes/pantalones denim3.jpg" alt="Auriculares inalámbricos SoundBeats - En uso" class="product-image" data-product="2" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="2" data-image="1"></button>
+                            <button class="image-dot" data-product="2" data-image="2"></button>
+                            <button class="image-dot" data-product="2" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">DENIM TEARS</div>
+                        <h3 class="product-name">Pantalon</h3>
+                        <div class="product-price">3,12€</div>
+                        <a href="https://detail.1688.com/offer/873523985995.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                
+                <!-- Producto 3 -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <img src="imagenes/AF1-1.jpg" alt="Smartwatch FitLife" class="product-image active" data-product="3" data-image="1">
+                        <img src="imagenes/AF1-2.jpg" alt="Smartwatch FitLife - Correa negra" class="product-image" data-product="3" data-image="2">
+                        <img src="imagenes/AF1-3.jpg" alt="Smartwatch FitLife - Funciones" class="product-image" data-product="3" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="3" data-image="1"></button>
+                            <button class="image-dot" data-product="3" data-image="2"></button>
+                            <button class="image-dot" data-product="3" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">AIR FORCE 1</div>
+                        <h3 class="product-name">Zapatillas</h3>
+                        <div class="product-price">11,52€</div>
+                        <a href="https://detail.1688.com/offer/776612378536.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                
+                <!-- Producto 4 -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <img src="imagenes/Jaaquemous1.jpg" alt="Cámara deportiva ActionCam" class="product-image active" data-product="4" data-image="1">
+                        <img src="imagenes/jaaquemous2.jpg" alt="Cámara deportiva ActionCam - Accesorios" class="product-image" data-product="4" data-image="2">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="4" data-image="1"></button>
+                            <button class="image-dot" data-product="4" data-image="2"></button>
+                            <button class="image-dot" data-product="4" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">JAQUEMUS</div>
+                        <h3 class="product-name">Bolso</h3>
+                        <div class="product-price">3,91€</div>
+                        <a href="https://detail.1688.com/offer/708682246103.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                <!-- Producto 5 -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <img src="imagenes/garaavani--1.jpg" alt="Valentino Garavani" class="product-image active" data-product="5" data-image="1">
+                        <img src="imagenes/garavani 2.jpg" alt="Valentino Garavani" class="product-image" data-product="5" data-image="2">
+                        <img src="imagenes/garavani 3.jpg" alt="Valentino Garavani" class="product-image" data-product="5" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="5" data-image="1"></button>
+                            <button class="image-dot" data-product="5" data-image="2"></button>
+                            <button class="image-dot" data-product="5" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">Valentino Garavani</div>
+                        <h3 class="product-name">Zapatillas</h3>
+                        <div class="product-price">35,24€</div>
+                        <a href="https://detail.1688.com/offer/733330696195.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                <!-- Producto 6 -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <img src="imagenes/raalph lauren 1.jpg" alt="ralph lauren" class="product-image active" data-product="6" data-image="1">
+                        <img src="imagenes/ralph lauren 2.jpg" alt="ralph lauren" class="product-image" data-product="6" data-image="2">
+                        <img src="imagenes/ralph lauren 3.jpg" alt="ralph lauren" class="product-image" data-product="6" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="6" data-image="1"></button>
+                            <button class="image-dot" data-product="6" data-image="2"></button>
+                            <button class="image-dot" data-product="6" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">RALPH LAUREN CARGO</div>
+                        <h3 class="product-name">Pantalones</h3>
+                        <div class="product-price">7,99€</div>
+                        <a href="https://detail.1688.com/offer/885247580190.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                <!-- Producto 7 -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <img src="imagenes/hermes 1.jpg" alt="Valentino Garavani" class="product-image active" data-product="7" data-image="1">
+                        <img src="imagenes/hermes 2.jpg" alt="Valentino Garavani" class="product-image" data-product="7" data-image="2">
+                        <img src="imagenes/heeermes 3.jpg" alt="Valentino Garavani" class="product-image" data-product="7" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="7" data-image="1"></button>
+                            <button class="image-dot" data-product="7" data-image="2"></button>
+                            <button class="image-dot" data-product="7" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">HERMES</div>
+                        <h3 class="product-name">Zapatillas</h3>
+                        <div class="product-price">29,54€</div>
+                        <a href="https://detail.1688.com/offer/796969944304.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+        
+                
+            </div>
+        </section>
+        
+        <section class="video-section">
+            <div class="container">
+                <h2 class="section-title">Cómo realizar pedidos en el mercado chino</h2>
+                <div class="video-container">
+                    <h3 class="video-title">Tutorial: Compra segura y eficiente</h3>
+                    <div class="video-content">
+                        <div class="video-placeholder">
+                            <div class="placeholder-text">
+                                <iframe width="760" height="415" 
+                                src="https://www.youtube.com/embed/ZRresqiiFs4" 
+                                title="YouTube video player" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+    <script>
+        // Script para la navegación de imágenes de productos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selector para todos los puntos de navegación de imágenes
+            const imageDots = document.querySelectorAll('.image-dot');
+            
+            // Añadir evento de clic a cada punto
+            imageDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product');
+                    const imageId = this.getAttribute('data-image');
+                    
+                    // Ocultar todas las imágenes activas para este producto
+                    document.querySelectorAll(`.product-image[data-product="${productId}"]`).forEach(img => {
+                        img.classList.remove('active');
+                    });
+                    
+                    // Desactivar todos los puntos para este producto
+                    document.querySelectorAll(`.image-dot[data-product="${productId}"]`).forEach(dot => {
+                        dot.classList.remove('active');
+                    });
+                    
+                    // Activar la imagen seleccionada
+                    document.querySelector(`.product-image[data-product="${productId}"][data-image="${imageId}"]`).classList.add('active');
+                    
+                    // Activar el punto seleccionado
+                    this.classList.add('active');
+                });
+            });
+            
+            // Cambio automático de imágenes cada 3 segundos
+            setInterval(function() {
+                // Para cada producto, avanzar a la siguiente imagen
+                for (let productId = 1; productId <= 10; productId++) {
+                    const activeImg = document.querySelector(`.product-image.active[data-product="${productId}"]`);
+                    const activeImgId = parseInt(activeImg.getAttribute('data-image'));
+                    
+                    // Calcular el ID de la siguiente imagen (circular)
+                    const totalImages = document.querySelectorAll(`.product-image[data-product="${productId}"]`).length;
+                    const nextImgId = activeImgId < totalImages ? activeImgId + 1 : 1;
+                    
+                    // Simular clic en el punto correspondiente a la siguiente imagen
+                    document.querySelector(`.image-dot[data-product="${productId}"][data-image="${nextImgId}"]`).click();
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
