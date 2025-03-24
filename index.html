@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Productos - Importaciones de China</title>
+    <title>Catálogo de Productos - Look Up Trendy</title>
     <style>
         :root {
             --primary-color: #ff6200;
@@ -80,6 +80,70 @@
             margin: 10px auto 0;
         }
         
+        /* Filtros y Búsqueda */
+        .filters-container {
+            background-color: var(--secondary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .filters-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-button {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .filter-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .filter-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .search-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .search-input {
+            width: 60%;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
         /* Catálogo de productos */
         .product-grid {
             display: grid;
@@ -144,7 +208,6 @@
         
         .image-dot.active {
             background-color: white;
-            
         }
         
         .product-info {
@@ -161,6 +224,10 @@
             font-size: 1.2em;
             margin-bottom: 10px;
             font-weight: 600;
+        }
+        
+        .product-category {
+            display: none;
         }
         
         .product-price {
@@ -182,6 +249,14 @@
         
         .product-link:hover {
             background-color: #3a5683;
+        }
+        
+        /* No results message */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #777;
         }
         
         /* Video tutorial */
@@ -225,7 +300,6 @@
             align-items: center;
             color: #555;
         }
-        
     </style>
 </head>
 <body>
@@ -233,7 +307,6 @@
         <div class="container">
             <h1>Look Up Trendy</h1>
             <p>¡ Compra tu ropa de marca al mejor precio !</p>
-        
         </div>
     </header>
     
@@ -242,15 +315,31 @@
             <li><a href="https://ikako.vip/r/LookUpTrendy" target="_blank"><h2>440€ en Kakobuy 👈🏼</h2></a></li>
         </ul>
     </nav>
-    <div class="controls">
-            
+    
     <main>
         <section class="container">
             <h2 class="section-title">Catálogo de Productos</h2>
             
-            <div class="product-grid">
-                <!-- Producto 1 -->
-                <div class="product-card">
+            <div class="filters-container">
+                <h3 class="filters-title">Filtrar por categoría</h3>
+                <div class="filter-buttons">
+                    <button class="filter-button active" data-category="todos">Todos</button>
+                    <button class="filter-button" data-category="camisetas">Camisetas</button>
+                    <button class="filter-button" data-category="pantalones">Pantalones</button>
+                    <button class="filter-button" data-category="zapatillas">Zapatillas</button>
+                    <button class="filter-button" data-category="accesorios">Accesorios</button>
+                    <button class="filter-button" data-category="sudaderas">Sudaderas</button>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Buscar productos por nombre o marca...">
+                </div>
+            </div>
+            
+            <div class="product-grid" id="productGrid">
+
+                <!-- Producto 1  -->
+                <div class="product-card" data-category="camisetas">
                     <div class="product-images">
                         <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/22/b3468e131352111604aed3316d68acdf.jpg" alt="Smartphone XiaoPro" class="product-image active" data-product="1" data-image="1">
                         <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/22/51d842967395dfb2ef1bb366df92cdf0.jpg" alt="Smartphone XiaoPro - Vista lateral" class="product-image" data-product="1" data-image="2">
@@ -263,13 +352,121 @@
                     </div>
                     <div class="product-info">
                         <div class="product-model">DENIM TEARS</div>
-                        <h3 class="product-name">Camiseta</h3>
+                        <h3 class="product-name">Camiseta DENIM TEARS</h3>
+                        <div class="product-category">camisetas</div>
                         <div class="product-price">3,12€</div>
                         <a href="https://detail.1688.com/offer/873523985995.html" class="product-link">Ver detalles</a>
                     </div>
                 </div>
                 
-
+                <!-- Producto 2 -->
+                <div class="product-card" data-category="pantalones">
+                    <div class="product-images">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/22/3706a509e260a087d98bb62c00e5965a.jpg" alt="Auriculares inalámbricos SoundBeats" class="product-image active" data-product="2" data-image="1">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/22/56dc46f6306693975b8ab2ae013da52c.jpg" alt="Auriculares inalámbricos SoundBeats" class="product-image active" data-product="2" data-image="2">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/22/3c92202ffa94e8b5b24925411e06674e.jpg" alt="Auriculares inalámbricos SoundBeats - En uso" class="product-image" data-product="2" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="2" data-image="1"></button>
+                            <button class="image-dot" data-product="2" data-image="2"></button>
+                            <button class="image-dot" data-product="2" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">DENIM TEARS</div>
+                        <h3 class="product-name">Pantalón DENIM TEARS</h3>
+                        <div class="product-category">pantalones</div>
+                        <div class="product-price">3,12€</div>
+                        <a href="https://detail.1688.com/offer/873523985995.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                
+                <!-- Producto 3  -->
+                <div class="product-card" data-category="zapatillas">
+                    <div class="product-images">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/a7d2736c47cb1750cac7367925234942.jpg" alt="Smartwatch FitLife" class="product-image active" data-product="3" data-image="1">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/6648a95b5083f3b1d569d69832b5eaea.jpg" alt="Smartwatch FitLife - Correa negra" class="product-image" data-product="3" data-image="2">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/770bad8ac6977cc50020408dc8669101.jpg" alt="Smartwatch FitLife - Funciones" class="product-image" data-product="3" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="3" data-image="1"></button>
+                            <button class="image-dot" data-product="3" data-image="2"></button>
+                            <button class="image-dot" data-product="3" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">AIR FORCE 1</div>
+                        <h3 class="product-name">Zapatillas NIKE</h3>
+                        <div class="product-category">zapatillas</div>
+                        <div class="product-price">11,52€</div>
+                    </div>
+                    <a href="https://detail.1688.com/offer/776612378536.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                
+                <!-- Producto 4  -->
+                <div class="product-card" data-category="accesorios">
+                    <div class="product-images">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/22/b365e09e94d8d92830fc95cf96c50716.jpg" alt="Cámara deportiva ActionCam" class="product-image active" data-product="4" data-image="1">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/22/ea4c9d90dea7e7aa2f16bf28b6de964f.jpg" alt="Cámara deportiva ActionCam - Accesorios" class="product-image" data-product="4" data-image="2">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="4" data-image="1"></button>
+                            <button class="image-dot" data-product="4" data-image="2"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">JAQUEMUS</div>
+                        <h3 class="product-name">Bolso</h3>
+                        <div class="product-category">accesorios</div>
+                        <div class="product-price">3,91€</div>
+                        <a href="https://detail.1688.com/offer/708682246103.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                
+                <!-- Producto 5  -->
+                <div class="product-card" data-category="zapatillas">
+                    <div class="product-images">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/f3b53f7d521a09bfd98d222b65435224.jpg" alt="Valentino Garavani" class="product-image active" data-product="5" data-image="1">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/c977f3585f4b90eb60c9d1a0aafc9b0f.jpg" alt="Valentino Garavani" class="product-image" data-product="5" data-image="2">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/d604d0b51f909347b2d40cdb1c2efa3b.jpg" alt="Valentino Garavani" class="product-image" data-product="5" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="5" data-image="1"></button>
+                            <button class="image-dot" data-product="5" data-image="2"></button>
+                            <button class="image-dot" data-product="5" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">VALENTINO GARAVANI</div>
+                        <h3 class="product-name">zapatillas Valentino</h3>
+                        <div class="product-category">zapatillas</div>
+                        <div class="product-price">35,24€</div>
+                        <a href="https://detail.1688.com/offer/733330696195.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                 <!-- Producto 6  -->
+                 <div class="product-card" data-category="zapatillas">
+                    <div class="product-images">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/f3b53f7d521a09bfd98d222b65435224.jpg" alt="Valentino Garavani" class="product-image active" data-product="6" data-image="1">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/c977f3585f4b90eb60c9d1a0aafc9b0f.jpg" alt="Valentino Garavani" class="product-image" data-product="6" data-image="2">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/21/d604d0b51f909347b2d40cdb1c2efa3b.jpg" alt="Valentino Garavani" class="product-image" data-product="6" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="6" data-image="1"></button>
+                            <button class="image-dot" data-product="6" data-image="2"></button>
+                            <button class="image-dot" data-product="6" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">VALENTINO GARAVANI</div>
+                        <h3 class="product-name">zapatillas Valentino</h3>
+                        <div class="product-category">zapatillas</div>
+                        <div class="product-price">35,24€</div>
+                        <a href="https://detail.1688.com/offer/733330696195.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <div id="noResults" class="no-results" style="display: none;">
+                No se encontraron productos que coincidan con tu búsqueda.
             </div>
         </section>
         
@@ -294,11 +491,60 @@
                 </div>
             </div>
         </section>
+    </main>
     
     <script>
-        // Script para la navegación de imágenes de productos
         document.addEventListener('DOMContentLoaded', function() {
-            // Selector para todos los puntos de navegación de imágenes
+            // Variables para filtrado
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const searchInput = document.querySelector('.search-input');
+            const productCards = document.querySelectorAll('.product-card');
+            const productGrid = document.getElementById('productGrid');
+            const noResults = document.getElementById('noResults');
+            
+            // Función para filtrar productos
+            function filterProducts() {
+                const activeCategory = document.querySelector('.filter-button.active').getAttribute('data-category');
+                const searchTerm = searchInput.value.toLowerCase();
+                let resultsFound = false;
+                
+                productCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    const productName = card.querySelector('.product-name').textContent.toLowerCase();
+                    const productModel = card.querySelector('.product-model').textContent.toLowerCase();
+                    
+                    // Verificar si el producto coincide con el filtro de categoría y búsqueda
+                    const matchesCategory = activeCategory === 'todos' || category === activeCategory;
+                    const matchesSearch = productName.includes(searchTerm) || productModel.includes(searchTerm);
+                    
+                    if (matchesCategory && matchesSearch) {
+                        card.style.display = 'block';
+                        resultsFound = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Mostrar mensaje de no resultados si es necesario
+                noResults.style.display = resultsFound ? 'none' : 'block';
+            }
+            
+            // Event listeners para filtros
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Quitar la clase activa de todos los botones
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Añadir la clase activa al botón seleccionado
+                    this.classList.add('active');
+                    // Filtrar productos
+                    filterProducts();
+                });
+            });
+            
+            // Event listener para búsqueda
+            searchInput.addEventListener('input', filterProducts);
+            
+            // Navegación de imágenes de productos
             const imageDots = document.querySelectorAll('.image-dot');
             
             // Añadir evento de clic a cada punto
@@ -328,17 +574,24 @@
             // Cambio automático de imágenes cada 3 segundos
             setInterval(function() {
                 // Para cada producto, avanzar a la siguiente imagen
-                for (let productId = 1; productId <= 11; productId++) {
+                const uniqueProductIds = [...new Set([...document.querySelectorAll('.product-image')].map(img => img.getAttribute('data-product')))];
+                
+                uniqueProductIds.forEach(productId => {
                     const activeImg = document.querySelector(`.product-image.active[data-product="${productId}"]`);
-                    const activeImgId = parseInt(activeImg.getAttribute('data-image'));
-                    
-                    // Calcular el ID de la siguiente imagen (circular)
-                    const totalImages = document.querySelectorAll(`.product-image[data-product="${productId}"]`).length;
-                    const nextImgId = activeImgId < totalImages ? activeImgId + 1 : 1;
-                    
-                    // Simular clic en el punto correspondiente a la siguiente imagen
-                    document.querySelector(`.image-dot[data-product="${productId}"][data-image="${nextImgId}"]`).click();
-                }
+                    if (activeImg) {
+                        const activeImgId = parseInt(activeImg.getAttribute('data-image'));
+                        
+                        // Calcular el ID de la siguiente imagen (circular)
+                        const totalImages = document.querySelectorAll(`.product-image[data-product="${productId}"]`).length;
+                        const nextImgId = activeImgId < totalImages ? activeImgId + 1 : 1;
+                        
+                        // Simular clic en el punto correspondiente a la siguiente imagen
+                        const nextDot = document.querySelector(`.image-dot[data-product="${productId}"][data-image="${nextImgId}"]`);
+                        if (nextDot) {
+                            nextDot.click();
+                        }
+                    }
+                });
             }, 3000);
         });
     </script>
