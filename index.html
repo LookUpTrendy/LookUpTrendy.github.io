@@ -144,6 +144,12 @@
         
         .image-dot.active {
             background-color: white;
+            
+        }
+        .search-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         
         .product-info {
@@ -241,7 +247,19 @@
             <li><a href="https://ikako.vip/r/LookUpTrendy" target="_blank"><h2>440€ en Kakobuy 👈🏼</h2></a></li>
         </ul>
     </nav>
-    
+    <div class="controls">
+            <div class="search-filter">
+                <input type="text" id="search" placeholder="Buscar productos...">
+                <select id="category-filter">
+                    <option value="">Todas las categorías</option>
+                    <option value="camisetas">Camisetas</option>
+                    <option value="pantalones">Pantalones</option>
+                    <option value="vestidos">Vestidos</option>
+                    <option value="zapatos">Zapatos</option>
+                    <option value="accesorios">Accesorios</option>
+                </select>
+                <button id="filter-btn">Filtrar</button>
+            </div>
     <main>
         <section class="container">
             <h2 class="section-title">Catálogo de Productos</h2>
