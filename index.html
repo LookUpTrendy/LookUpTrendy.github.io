@@ -438,7 +438,25 @@
                         <a href="https://weidian.com/item.html?itemID=5948443556" class="product-link">Ver detalles</a>
                     </div>
                 </div>
-                
+                  <!-- Producto 11 -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/24/9a3626b2c83aab4fe32e132037b08658.jpg" alt="Valentino Garavani" class="product-image active" data-product="10" data-image="1">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/24/882e4f524d265454701d8000d3a83922.jpg" alt="Valentino Garavani" class="product-image" data-product="10" data-image="2">
+                        <img src="https://kako-alosshk-pic.kakobuy.com/whg/202503/24/12518ae2c3fd09c971d4cd179990259b.jpg" alt="Valentino Garavani" class="product-image" data-product="10" data-image="3">
+                        <div class="image-nav">
+                            <button class="image-dot active" data-product="10" data-image="1"></button>
+                            <button class="image-dot" data-product="10" data-image="2"></button>
+                            <button class="image-dot" data-product="10" data-image="3"></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-model">NIKE</div>
+                        <h3 class="product-name">Pantalones</h3>
+                        <div class="product-price">5,21€</div>
+                        <a href="https://detail.1688.com/offer/888163330052.html" class="product-link">Ver detalles</a>
+                    </div>
+                </div>
             </div>
         </section>
         
@@ -497,7 +515,7 @@
             // Cambio automático de imágenes cada 3 segundos
             setInterval(function() {
                 // Para cada producto, avanzar a la siguiente imagen
-                for (let productId = 1; productId <= 10; productId++) {
+                for (let productId = 1; productId <= 11; productId++) {
                     const activeImg = document.querySelector(`.product-image.active[data-product="${productId}"]`);
                     const activeImgId = parseInt(activeImg.getAttribute('data-image'));
                     
