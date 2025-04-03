@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos - Look Up Trendy</title>
+    <style>
+        :root {
+            --primary-color: #ff6200;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --bg-color: #000000;
+            --card-bg: white;
+            --header-text: rgb(0, 0, 0);
+            --nav-text: white;
+        }
+        
+        .light-mode {
+            --bg-color: #f0f0f0;
+            --text-color: #333;
+            --card-bg: white;
+            --secondary-color: #e0e0e0;
+            --nav-text: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        #starsCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--header-text);
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        nav {
+            background-color: var(--bg-color);
+            padding: 10px 0;
+            transition: background-color 0.3s;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin: 0 15px;
+        }
+        
+        nav ul li a {
+            color: var(--nav-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .trendy-text {
+            font-size: 3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #0a0a0a, #ff6600);
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0px 0px 10px rgba(255, 102, 0, 0.5);
+            }
+            to {
+                text-shadow: 0px 0px 20px rgb(0, 0, 0);
+            }
+        }
+        
+        .section-title {
+            text-align: center;
+            margin: 40px 0 20px;
+            color: var(--primary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-color);
+            margin: 10px auto 0;
+        }
+        
+        /* Filtros y Búsqueda */
+        .filters-container {
+            background-color: var(--secondary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .filters-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-button {
+            background-color: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .filter-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .filter-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .search-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .search-input {
+            width: 60%;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        /* Catálogo de productos */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-images {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .product-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .product-image.active {
+            opacity: 1;
+        }
+        
+        .image-nav {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .image-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            margin: 0 5px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .image-dot.active {
+            background-color: white;
+        }
+        
+        .product-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-model {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        
+        .product-name {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .product-category {
+            display: none;
+        }
+        
+        .product-price {
+            font-size: 1.3em;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .product-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .product-link:hover {
+            background-color: #e05600;
+        }
+        
+        /* No results message */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #777;
+        }
+         /* Video tutorial */
+        .video-section {
+            background-color: var(--card-bg);
+            padding: 50px 0;
+            margin: 50px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        
+        .video-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .video-content {
+            position: relative;
+            padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ddd;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #555;
+        }
+
+        /* Botón de cambio de tema */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.3s, background-color 0.3s;
+            font-size: 20px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background-color: #e05600;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="trendy-text">
+            <h1>Look Up Trendy</h1>
+        </div>
+    </header>
+    <main>
+        <section class="container">
+            <h2 class="section-title">Catálogo de Productos</h2>
+            
+            <div class="filters-container">
+                <h3 class="filters-title">Filtrar por categoría</h3>
+                <div class="filter-buttons">
+                    <button class="filter-button active" data-category="todos">Todos</button>
+                    <button class="filter-button" data-category="camisetas">Camisetas</button>
+                    <button class="filter-button" data-category="pantalones">Pantalones</button>
+                    <button class="filter-button" data-category="zapatillas">Zapatillas</button>
+                    <button class="filter-button" data-category="accesorios">Accesorios</button>
+                    <button class="filter-button" data-category="sudaderas">Sudaderas</button>
+                    <button class="filter-button" data-category="sudaderas">¿Como comprar?</button>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Buscar productos por nombre o marca...">
+                </div>
+            </div>
+            
+            <div class="product-grid" id="productGrid">
+
+               <!-- Producto 1 -->
+               <div class="product-card" data-category="camisetas">
+                <div class="product-images">
+                    <img src="camiseta-denim-1.jpg" alt="DENIM TEARS" class="product-image active" data-product="1" data-image="1">
+                    <img src="camiseta-denim-2.jpg" alt="DENIM TEARS" class="product-image" data-product="1" data-image="2">
+                    <img src="camiseta-denim-3.jpg" alt="DENIM TEARS" class="product-image" data-product="1" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="1" data-image="1"></button>
+                        <button class="image-dot" data-product="1" data-image="2"></button>
+                        <button class="image-dot" data-product="1" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">DENIM TEARS</div>
+                    <h3 class="product-name">Camiseta DENIM TEARS</h3>
+                    <div class="product-category">camisetas</div>
+                    <div class="product-price">3,12€</div>
+                    <a href="https://detail.1688.com/offer/873523985995.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            
+            <!-- Producto 2 -->
+            <div class="product-card" data-category="pantalones">
+                <div class="product-images">
+                    <img src="pantalones-denim-1.jpg" alt="DENIM TEARS" class="product-image active" data-product="2" data-image="1">
+                    <img src="pantalones-denim-2.jpg" alt="DENIM TEARS" class="product-image" data-product="2" data-image="2">
+                    <img src="pantalones-denim-3.jpg" alt="DENIM TEARS" class="product-image" data-product="2" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="2" data-image="1"></button>
+                        <button class="image-dot" data-product="2" data-image="2"></button>
+                        <button class="image-dot" data-product="2" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">DENIM TEARS</div>
+                    <h3 class="product-name">Pantalón DENIM TEARS</h3>
+                    <div class="product-category">pantalones</div>
+                    <div class="product-price">3,12€</div>
+                    <a href="https://detail.1688.com/offer/873523985995.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            
+            <!-- Producto 3 -->
+            <div class="product-card" data-category="zapatillas">
+                <div class="product-images">
+                    <img src="AF1-NEGRAS-1.jpg" alt="AIR FORCE 1" class="product-image active" data-product="3" data-image="1">
+                    <img src="AF1-NEGRAS-2.jpg" alt="AIR FORCE 1" class="product-image" data-product="3" data-image="2">
+                    <img src="AF1-NEGRAS-3.jpg" alt="AIR FORCE 1" class="product-image" data-product="3" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="3" data-image="1"></button>
+                        <button class="image-dot" data-product="3" data-image="2"></button>
+                        <button class="image-dot" data-product="3" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">AIR FORCE 1</div>
+                    <h3 class="product-name">Zapatillas NIKE</h3>
+                    <div class="product-category">zapatillas</div>
+                    <div class="product-price">11,52€</div>
+                    <a href="https://detail.1688.com/offer/776612378536.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            
+            <!-- Producto 4 -->
+            <div class="product-card" data-category="accesorios">
+                <div class="product-images">
+                    <img src="Jaaquemous-1.jpg" alt="JAQUEMUS" class="product-image active" data-product="4" data-image="1">
+                    <img src="Jaaquemous-2.jpg" alt="JAQUEMUS" class="product-image" data-product="4" data-image="2">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="4" data-image="1"></button>
+                        <button class="image-dot" data-product="4" data-image="2"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">JAQUEMUS</div>
+                    <h3 class="product-name">Bolso</h3>
+                    <div class="product-category">accesorios</div>
+                    <div class="product-price">3,91€</div>
+                    <a href="https://detail.1688.com/offer/708682246103.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            
+            <!-- Producto 5 -->
+            <div class="product-card" data-category="zapatillas">
+                <div class="product-images">
+                    <img src="garavani-1.jpg" alt="Valentino Garavani" class="product-image active" data-product="5" data-image="1">
+                    <img src="garavani-2.jpg" alt="Valentino Garavani" class="product-image" data-product="5" data-image="2">
+                    <img src="garavani-3.jpg" alt="Valentino Garavani" class="product-image" data-product="5" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="5" data-image="1"></button>
+                        <button class="image-dot" data-product="5" data-image="2"></button>
+                        <button class="image-dot" data-product="5" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">VALENTINO GARAVANI</div>
+                    <h3 class="product-name">Zapatillas Valentino</h3>
+                    <div class="product-category">zapatillas</div>
+                    <div class="product-price">35,24€</div>
+                    <a href="https://detail.1688.com/offer/733330696195.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            
+            <!-- Producto 6 -->
+            <div class="product-card" data-category="pantalones">
+                <div class="product-images">
+                    <img src="ralph-lauren-1.jpg" alt="ralph lauren" class="product-image active" data-product="6" data-image="1">
+                    <img src="ralph-lauren-2.jpg" alt="ralph lauren" class="product-image" data-product="6" data-image="2">
+                    <img src="ralph-lauren-3.jpg" alt="ralph lauren" class="product-image" data-product="6" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="6" data-image="1"></button>
+                        <button class="image-dot" data-product="6" data-image="2"></button>
+                        <button class="image-dot" data-product="6" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">RALPH LAUREN CARGO</div>
+                    <h3 class="product-name">Pantalón CARGO</h3>
+                    <div class="product-category">pantalones</div>
+                    <div class="product-price">7,99€</div>
+                    <a href="https://detail.1688.com/offer/885247580190.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            <!-- Producto 7 -->
+            <div class="product-card" data-category="zapatillas">
+                <div class="product-images">
+                    <img src="hermes-1.jpg" alt="HERMES" class="product-image active" data-product="7" data-image="1">
+                    <img src="hermes-2.jpg" alt="HERMES" class="product-image" data-product="7" data-image="2">
+                    <img src="hermes-3.jpg" alt="HERMES" class="product-image" data-product="7" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="7" data-image="1"></button>
+                        <button class="image-dot" data-product="7" data-image="2"></button>
+                        <button class="image-dot" data-product="7" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">HERMES</div>
+                    <h3 class="product-name">zapatillas</h3>
+                    <div class="product-category">zapatillas</div>
+                    <div class="product-price">29,54€</div>
+                    <a href="https://detail.1688.com/offer/796969944304.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            <!-- Producto 8 -->
+            <div class="product-card" data-category="zapatillas">
+                <div class="product-images">
+                    <img src="nocta-step2-1.jpg" alt="NOCTA STEP 2" class="product-image active" data-product="8" data-image="1">
+                    <img src="nocta-step2-2.jpg" alt="NOCTA STEP 2" class="product-image" data-product="8" data-image="2">
+                    <img src="nocta-step2-3.jpg" alt="NOCTA STEP 2" class="product-image" data-product="8" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="8" data-image="1"></button>
+                        <button class="image-dot" data-product="8" data-image="2"></button>
+                        <button class="image-dot" data-product="8" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">NOCTA STEP 2</div>
+                    <h3 class="product-name">zapatillas Nike</h3>
+                    <div class="product-category">zapatillas</div>
+                    <div class="product-price">32,62€</div>
+                    <a href="https://detail.1688.com/offer/828877955596.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+             <!-- Producto 9 -->
+             <div class="product-card" data-category="pantalones">
+                <div class="product-images">
+                    <img src="TECH-CORTO-NEGRO-1.jpg" alt="TECH CORTOS" class="product-image active" data-product="9" data-image="1">
+                    <img src="TECH-CORTO-NEGRO-2.jpg" alt="TECH CORTOS" class="product-image" data-product="9" data-image="2">
+                    <img src="TECH-CORTO-NEGRO-3.jpg" alt="TECH CORTOS" class="product-image" data-product="9" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="9" data-image="1"></button>
+                        <button class="image-dot" data-product="9" data-image="2"></button>
+                        <button class="image-dot" data-product="9" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">TECH CORTOS</div>
+                    <h3 class="product-name">pantalones Nike</h3>
+                    <div class="product-category">pantalones</div>
+                    <div class="product-price">8,03€</div>
+                    <a href="https://detail.1688.com/offer/780285950985.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            <!-- Producto 10 -->
+            <div class="product-card" data-category="accesorios">
+                <div class="product-images">
+                    <img src="CASIO-G-SHOCK-1.jpg" alt="CASIO G-SHOCK" class="product-image active" data-product="10" data-image="1">
+                    <img src="CASIO-G-SHOCK-2.jpg" alt="CASIO G-SHOCK" class="product-image" data-product="10" data-image="2">
+                    <img src="CASIO-G-SHOCK-3.jpg" alt="CASIO G-SHOCK" class="product-image" data-product="10" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="10" data-image="1"></button>
+                        <button class="image-dot" data-product="10" data-image="2"></button>
+                        <button class="image-dot" data-product="10" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">CASIO G-SHOCK</div>
+                    <h3 class="product-name">Reloj</h3>
+                    <div class="product-category">accesorios</div>
+                    <div class="product-price">11,49€</div>
+                    <a href="https://weidian.com/item.html?itemID=5948443556" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            <!-- Producto 11 -->
+            <div class="product-card" data-category="pantalones">
+                <div class="product-images">
+                    <img src="TECH-CORTO-AZUL-1.jpg" alt="Pantalones nike" class="product-image active" data-product="11" data-image="1">
+                    <img src="TECH-CORTO-AZUL-2.jpg" alt="Pantalones nike" class="product-image" data-product="11" data-image="2">
+                    <img src="TECH-CORTO-AZUL-3.jpg" alt="Pantalones nike" class="product-image" data-product="11" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="11" data-image="1"></button>
+                        <button class="image-dot" data-product="11" data-image="2"></button>
+                        <button class="image-dot" data-product="11" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">NIKE</div>
+                    <h3 class="product-name">Pantalones nike</h3>
+                    <div class="product-category">pantalones</div>
+                    <div class="product-price">5,21€</div>
+                    <a href="https://detail.1688.com/offer/888163330052.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+            <!-- Producto 12 -->
+            <div class="product-card" data-category="pantalones">
+                <div class="product-images">
+                    <img src="pantalones-corteiz-1.jpg" alt="CORTEIZ" class="product-image active" data-product="12" data-image="1">
+                    <img src="pantalones-corteiz-2.jpg" alt="CORTEIZ" class="product-image" data-product="12" data-image="2">
+                    <img src="pantalones-corteiz-3.jpg" alt="CORTEIZ" class="product-image" data-product="12" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="12" data-image="1"></button>
+                        <button class="image-dot" data-product="12" data-image="2"></button>
+                        <button class="image-dot" data-product="12" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">CORTEIZ</div>
+                    <h3 class="product-name">pantalones cargo</h3>
+                    <div class="product-category">pantalones</div>
+                    <div class="product-price">5,41€</div>
+                    <a href="https://detail.1688.com/offer/762808730223.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+               <!-- Producto 13 -->
+            <div class="product-card" data-category="zapatillas">
+                <div class="product-images">
+                    <img src="AF1-BLANCAS-1.jpg" alt="AIR FORCE 1" class="product-image active" data-product="13" data-image="1">
+                    <img src="AF1-BLANCAS-2.jpg" alt="AIR FORCE 1" class="product-image" data-product="13" data-image="2">
+                    <img src="AF1-BLANCAS-3.jpg" alt="AIR FORCE 1" class="product-image" data-product="13" data-image="3">
+                    <div class="image-nav">
+                        <button class="image-dot active" data-product="13" data-image="1"></button>
+                        <button class="image-dot" data-product="13" data-image="2"></button>
+                        <button class="image-dot" data-product="13" data-image="3"></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-model">AIR FORCE 1</div>
+                    <h3 class="product-name">Zapatillas NIKE</h3>
+                    <div class="product-category">zapatillas</div>
+                    <div class="product-price">11,52€</div>
+                    <a href="https://detail.1688.com/offer/776612378536.html" class="product-link">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+            <div id="noResults" class="no-results" style="display: none;">
+                No se encontraron productos que coincidan con tu búsqueda.
+            </div>
+        </section>
+        
+        <section class="video-section">
+            <div class="product-card" data-category="¿Como comprar?"></div>
+            <div class="container">
+                <h2 class="section-title">Cómo realizar pedidos en el mercado chino</h2>
+                <div class="video-container">
+                    <h3 class="video-title">Tutorial: Compra segura y eficiente</h3>
+                    <div class="video-content">
+                        <div class="video-placeholder">
+                            <div class="placeholder-text">
+                                <iframe width="760" height="415" 
+                                src="https://www.youtube.com/embed/ZRresqiiFs4" 
+                                title="YouTube video player" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Botón para cambiar entre modo oscuro y claro -->
+    <button class="theme-toggle" id="themeToggle">☀️</button>
+
+    <script>
+        // Script para el cambio de tema (oscuro/claro)
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const storedTheme = localStorage.getItem('theme');
+            
+            // Verificar si hay un tema guardado en localStorage
+            if (storedTheme === 'light') {
+                body.classList.add('light-mode');
+                themeToggle.textContent = '🌙';
+            }
+            
+            // Evento para cambiar entre modo claro y oscuro
+            themeToggle.addEventListener('click', function() {
+                if (body.classList.contains('light-mode')) {
+                    // Cambiar a modo oscuro
+                    body.classList.remove('light-mode');
+                    themeToggle.textContent = '☀️';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    // Cambiar a modo claro
+                    body.classList.add('light-mode');
+                    themeToggle.textContent = '🌙';
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+            
+            // Script para los puntos de navegación de imágenes
+            const imageDots = document.querySelectorAll('.image-dot');
+            
+            imageDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product');
+                    const imageId = this.getAttribute('data-image');
+                    
+                    // Desactivar todos los puntos y ocultar todas las imágenes para este producto
+                    document.querySelectorAll(`.image-dot[data-product="${productId}"]`).forEach(d => {
+                        d.classList.remove('active');
+                    });
+                    
+                    document.querySelectorAll(`.product-image[data-product="${productId}"]`).forEach(img => {
+                        img.classList.remove('active');
+                    });
+                    
+                    // Activar el punto seleccionado y mostrar la imagen correspondiente
+                    this.classList.add('active');
+                    document.querySelector(`.product-image[data-product="${productId}"][data-image="${imageId}"]`).classList.add('active');
+                });
+            });
+            
+            // Script para los filtros de categorías
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const productCards = document.querySelectorAll('.product-card');
+            const noResults = document.getElementById('noResults');
+            const searchInput = document.querySelector('.search-input');
+            
+            // Función para filtrar productos
+            function filterProducts() {
+                const activeCategory = document.querySelector('.filter-button.active').getAttribute('data-category');
+                const searchTerm = searchInput.value.toLowerCase();
+                let visibleProducts = 0;
+                
+                productCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    const productName = card.querySelector('.product-name').textContent.toLowerCase();
+                    const productModel = card.querySelector('.product-model').textContent.toLowerCase();
+                    
+                    const matchesCategory = activeCategory === 'todos' || category === activeCategory;
+                    const matchesSearch = productName.includes(searchTerm) || productModel.includes(searchTerm) || searchTerm === '';
+                    
+                    if (matchesCategory && matchesSearch) {
+                        card.style.display = 'flex';
+                        visibleProducts++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Mostrar mensaje si no hay resultados
+                if (visibleProducts === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+            
+            // Eventos para los botones de filtro
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    filterProducts();
+                });
+            });
+            
+            // Evento para la búsqueda
+            searchInput.addEventListener('input', filterProducts);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables para filtrado
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const searchInput = document.querySelector('.search-input');
+            const productCards = document.querySelectorAll('.product-card');
+            const productGrid = document.getElementById('productGrid');
+            const noResults = document.getElementById('noResults');
+            
+            // Función para filtrar productos
+            function filterProducts() {
+                const activeCategory = document.querySelector('.filter-button.active').getAttribute('data-category');
+                const searchTerm = searchInput.value.toLowerCase();
+                let resultsFound = false;
+                
+                productCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    const productName = card.querySelector('.product-name').textContent.toLowerCase();
+                    const productModel = card.querySelector('.product-model').textContent.toLowerCase();
+                    
+                    // Verificar si el producto coincide con el filtro de categoría y búsqueda
+                    const matchesCategory = activeCategory === 'todos' || category === activeCategory;
+                    const matchesSearch = productName.includes(searchTerm) || productModel.includes(searchTerm);
+                    
+                    if (matchesCategory && matchesSearch) {
+                        card.style.display = 'block';
+                        resultsFound = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Mostrar mensaje de no resultados si es necesario
+                noResults.style.display = resultsFound ? 'none' : 'block';
+            }
+            
+            // Event listeners para filtros
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Quitar la clase activa de todos los botones
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Añadir la clase activa al botón seleccionado
+                    this.classList.add('active');
+                    // Filtrar productos
+                    filterProducts();
+                });
+            });
+            
+            // Event listener para búsqueda
+            searchInput.addEventListener('input', filterProducts);
+            
+            // Navegación de imágenes de productos
+            const imageDots = document.querySelectorAll('.image-dot');
+            
+            // Añadir evento de clic a cada punto
+            imageDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product');
+                    const imageId = this.getAttribute('data-image');
+                    
+                    // Ocultar todas las imágenes activas para este producto
+                    document.querySelectorAll(`.product-image[data-product="${productId}"]`).forEach(img => {
+                        img.classList.remove('active');
+                    });
+                    
+                    // Desactivar todos los puntos para este producto
+                    document.querySelectorAll(`.image-dot[data-product="${productId}"]`).forEach(dot => {
+                        dot.classList.remove('active');
+                    });
+                    
+                    // Activar la imagen seleccionada
+                    document.querySelector(`.product-image[data-product="${productId}"][data-image="${imageId}"]`).classList.add('active');
+                    
+                    // Activar el punto seleccionado
+                    this.classList.add('active');
+                });
+            });
+            
+            // Cambio automático de imágenes cada 3 segundos
+            setInterval(function() {
+                // Para cada producto, avanzar a la siguiente imagen
+                const uniqueProductIds = [...new Set([...document.querySelectorAll('.product-image')].map(img => img.getAttribute('data-product')))];
+                
+                uniqueProductIds.forEach(productId => {
+                    const activeImg = document.querySelector(`.product-image.active[data-product="${productId}"]`);
+                    if (activeImg) {
+                        const activeImgId = parseInt(activeImg.getAttribute('data-image'));
+                        
+                        // Calcular el ID de la siguiente imagen (circular)
+                        const totalImages = document.querySelectorAll(`.product-image[data-product="${productId}"]`).length;
+                        const nextImgId = activeImgId < totalImages ? activeImgId + 1 : 1;
+                        
+                        // Simular clic en el punto correspondiente a la siguiente imagen
+                        const nextDot = document.querySelector(`.image-dot[data-product="${productId}"][data-image="${nextImgId}"]`);
+                        if (nextDot) {
+                            nextDot.click();
+                        }
+                    }
+                });
+            }, 3000);
+        });
+
+        // Función para crear modal de zoom de imagen con navegación
+function createImageZoomModal() {
+  // Crear el modal container
+  const modal = document.createElement('div');
+  modal.id = 'imageZoomModal';
+  modal.style.display = 'none';
+  modal.style.position = 'fixed';
+  modal.style.zIndex = '1000';
+  modal.style.left = '0';
+  modal.style.top = '0';
+  modal.style.width = '100%';
+  modal.style.height = '100%';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.cursor = 'pointer';
+  
+  // Crear el elemento de imagen ampliada
+  const zoomedImg = document.createElement('img');
+  zoomedImg.id = 'zoomedImage';
+  zoomedImg.style.maxWidth = '90%';
+  zoomedImg.style.maxHeight = '90%';
+  zoomedImg.style.objectFit = 'contain';
+  zoomedImg.style.transition = 'transform 0.3s ease';
+  
+  // Crear botón de cierre
+  const closeBtn = document.createElement('span');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.style.position = 'absolute';
+  closeBtn.style.top = '15px';
+  closeBtn.style.right = '25px';
+  closeBtn.style.color = 'white';
+  closeBtn.style.fontSize = '40px';
+  closeBtn.style.fontWeight = 'bold';
+  closeBtn.style.cursor = 'pointer';
+  
+  // Crear flechas de navegación
+  const prevBtn = document.createElement('div');
+  prevBtn.innerHTML = '&#10094;';
+  prevBtn.id = 'prevImageBtn';
+  prevBtn.style.position = 'absolute';
+  prevBtn.style.top = '50%';
+  prevBtn.style.left = '20px';
+  prevBtn.style.color = 'white';
+  prevBtn.style.fontSize = '36px';
+  prevBtn.style.fontWeight = 'bold';
+  prevBtn.style.cursor = 'pointer';
+  prevBtn.style.padding = '10px';
+  prevBtn.style.userSelect = 'none';
+  prevBtn.style.transform = 'translateY(-50%)';
+  
+  const nextBtn = document.createElement('div');
+  nextBtn.innerHTML = '&#10095;';
+  nextBtn.id = 'nextImageBtn';
+  nextBtn.style.position = 'absolute';
+  nextBtn.style.top = '50%';
+  nextBtn.style.right = '20px';
+  nextBtn.style.color = 'white';
+  nextBtn.style.fontSize = '36px';
+  nextBtn.style.fontWeight = 'bold';
+  nextBtn.style.cursor = 'pointer';
+  nextBtn.style.padding = '10px';
+  nextBtn.style.userSelect = 'none';
+  nextBtn.style.transform = 'translateY(-50%)';
+  
+  // Añadir información del producto actual (para navegar)
+  const productInfo = document.createElement('div');
+  productInfo.id = 'currentProductInfo';
+  productInfo.style.display = 'none';
+  
+  // Añadir elementos al modal
+  modal.appendChild(zoomedImg);
+  modal.appendChild(closeBtn);
+  modal.appendChild(prevBtn);
+  modal.appendChild(nextBtn);
+  modal.appendChild(productInfo);
+  document.body.appendChild(modal);
+  
+  // Añadir evento para cerrar el modal
+  closeBtn.onclick = function() {
+    modal.style.display = 'none';
+  };
+  
+  modal.onclick = function(event) {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  };
+  
+  // Navegación de imágenes
+  prevBtn.onclick = function(event) {
+    event.stopPropagation();
+    navigateImages('prev');
+  };
+  
+  nextBtn.onclick = function(event) {
+    event.stopPropagation();
+    navigateImages('next');
+  };
+  
+  // Añadir navegación con teclado
+  document.addEventListener('keydown', function(event) {
+    if (modal.style.display === 'flex') {
+      if (event.key === 'ArrowLeft') {
+        navigateImages('prev');
+      } else if (event.key === 'ArrowRight') {
+        navigateImages('next');
+      } else if (event.key === 'Escape') {
+        modal.style.display = 'none';
+      }
+    }
+  });
+  
+  return modal;
+}
+
+// Función para navegar entre imágenes
+function navigateImages(direction) {
+  const productInfo = document.getElementById('currentProductInfo');
+  const zoomedImg = document.getElementById('zoomedImage');
+  
+  // Obtener información del producto actual
+  const productId = productInfo.getAttribute('data-product');
+  const currentImageId = parseInt(productInfo.getAttribute('data-image'));
+  
+  // Obtener todas las imágenes de este producto
+  const productImages = document.querySelectorAll(`.product-image[data-product="${productId}"]`);
+  const totalImages = productImages.length;
+  
+  // Calcular el ID de la siguiente/anterior imagen
+  let newImageId;
+  if (direction === 'next') {
+    newImageId = currentImageId < totalImages ? currentImageId + 1 : 1;
+  } else {
+    newImageId = currentImageId > 1 ? currentImageId - 1 : totalImages;
+  }
+  
+  // Obtener la nueva imagen
+  const newImage = document.querySelector(`.product-image[data-product="${productId}"][data-image="${newImageId}"]`);
+  
+  // Actualizar la imagen en el modal
+  zoomedImg.src = newImage.src;
+  zoomedImg.alt = newImage.alt;
+  
+  // Actualizar la información de la imagen actual
+  productInfo.setAttribute('data-image', newImageId);
+  
+  // Actualizar también la miniatura en el carrusel (opcional)
+  const correspondingDot = document.querySelector(`.image-dot[data-product="${productId}"][data-image="${newImageId}"]`);
+  if (correspondingDot) {
+    correspondingDot.click();
+  }
+}
+
+// Añadir eventos a todas las imágenes del producto
+function addZoomEventToImages() {
+  const productImages = document.querySelectorAll('.product-image');
+  const modal = createImageZoomModal();
+  const zoomedImg = document.getElementById('zoomedImage');
+  const productInfo = document.getElementById('currentProductInfo');
+  
+  productImages.forEach(img => {
+    img.style.cursor = 'zoom-in';
+    
+    img.addEventListener('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      // Guardar información del producto y la imagen
+      const productId = this.getAttribute('data-product');
+      const imageId = this.getAttribute('data-image');
+      
+      productInfo.setAttribute('data-product', productId);
+      productInfo.setAttribute('data-image', imageId);
+      
+      // Actualizar la fuente de la imagen en el modal
+      zoomedImg.src = this.src;
+      zoomedImg.alt = this.alt;
+      
+      // Mostrar el modal con flexbox para centrar
+      modal.style.display = 'flex';
+    });
+  });
+}
+
+// Añadir indicador de carga a cada imagen
+function addImageLoadingIndicator() {
+  const productImages = document.querySelectorAll('.product-image');
+  
+  productImages.forEach(img => {
+    // Asegurar que la imagen se cargue correctamente
+    if (!img.complete) {
+      img.style.opacity = '0';
+      
+      img.addEventListener('load', function() {
+        img.style.opacity = '1';
+        img.style.transition = 'opacity 0.3s ease';
+      });
+    }
+  });
+}
+
+// Ejecutar cuando el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function() {
+  // Llamar a la función que añade los eventos de zoom
+  addZoomEventToImages();
+  addImageLoadingIndicator();
+  
+  // Conservar el evento original del carrusel de imágenes
+  const imageDots = document.querySelectorAll('.image-dot');
+  imageDots.forEach(dot => {
+    dot.addEventListener('click', function(event) {
+      // Detener la propagación para que no se active el zoom
+      event.stopPropagation();
+    });
+  });
+});
+    </script>
+    <canvas id="starsCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("starsCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let stars = [];
+        const numStars = 50;
+
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 1
+            });
+        }
+
+        function drawStars() {
+            ctx.fillStyle = "orange";
+            for (let star of stars) {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        drawStars();
+    </script>
+</body>
+</html>
